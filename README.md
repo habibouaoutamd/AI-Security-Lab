@@ -68,8 +68,8 @@ Open `index.html` directly in your browser — no server needed.
 ### Workflow
 
 1. Click **⚙ API KEY** in the top-right and enter your OpenAI or Anthropic key
-2. Set the **model** (dropdown) and **system prompt under test** (the victim prompt)
-3. Go to **RUN ATTACK** → select an attack category → enter a hypothesis (or click **USE EXAMPLE ↓**)
+2. Set the **model** and **system prompt under test** (the victim prompt)
+3. Go to **RUN ATTACK** → select an attack category → enter a hypothesis
 4. Click **GENERATE PROMPTS** — the platform uses the LLM to generate 4 adversarial variants
 5. Click **FIRE AT TARGET →** on individual prompts, or **RUN ALL PROMPTS →** to batch test
 6. Results are scored automatically (AI judge first, regex fallback) and saved to **localStorage** — they persist across sessions
@@ -86,7 +86,6 @@ Open `index.html` directly in your browser — no server needed.
 | Filter bar | Filter results by outcome (succeeded/refused), category, and model |
 | Model comparison | Select two models on the SCORES page to compare resilience scores and dimension bars side-by-side |
 | CSV export | Download all results as a CSV from the RESULTS page |
-| Example hints | Select a category to see a pre-written hypothesis and target context example |
 
 ---
 
@@ -209,6 +208,4 @@ Score = (Injection Resistance × 0.25)
 - **LLM-as-judge scoring in CLI** — bring the CLI in line with the UI's semantic scoring so results are fully consistent across both interfaces
 - **Multi-turn / conversation testing** — many-shot attacks currently fire as single turns; real persistence testing needs stateful conversation support
 - **Backend proxy** — move API calls server-side so keys are never exposed in the browser (required before sharing the UI with clients)
-- **Adaptive attack engine** — autonomous red-team agent that reads responses, decides whether to escalate/pivot/persist, and keeps attacking until success or budget exhausted
-- **Enterprise assessment wrapper** — scope questionnaire, PDF report template, re-assessment cadence
 - **Webhook / CI integration** — run the harness as part of a deployment pipeline to catch regressions before they reach production

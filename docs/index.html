@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Security Lab — Documentation</title>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#f8fafc;--surface:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#475569;
+  --accent:#0369a1;--accent-bg:#f0f9ff;--code-bg:#f1f5f9;--nav-bg:#fff;--nav-w:240px}
+@media(prefers-color-scheme:dark){
+  :root{--bg:#0f172a;--surface:#1e293b;--border:#334155;--text:#e2e8f0;--muted:#94a3b8;
+    --accent:#38bdf8;--accent-bg:#0c4a6e;--code-bg:#1e293b;--nav-bg:#1e293b}
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  background:var(--bg);color:var(--text);line-height:1.7;display:flex;min-height:100vh}
+
+/* Sidebar */
+.sidebar{width:var(--nav-w);position:fixed;top:0;left:0;bottom:0;background:var(--nav-bg);
+  border-right:1px solid var(--border);padding:24px 16px;overflow-y:auto;z-index:10}
+.sidebar h1{font-size:14px;font-weight:700;margin-bottom:4px;color:var(--accent)}
+.sidebar .sub{font-size:11px;color:var(--muted);margin-bottom:20px}
+.sidebar a{display:block;padding:8px 12px;border-radius:6px;font-size:13px;
+  color:var(--muted);text-decoration:none;margin-bottom:2px;transition:all 0.15s}
+.sidebar a:hover{background:var(--accent-bg);color:var(--accent)}
+.sidebar a.active{background:var(--accent-bg);color:var(--accent);font-weight:600}
+.sidebar .section{font-size:10px;letter-spacing:1.5px;color:var(--muted);
+  margin:16px 0 6px 12px;text-transform:uppercase}
+
+/* Main content */
+.main{margin-left:var(--nav-w);flex:1;padding:40px 48px;max-width:860px}
+.main h1{font-size:28px;font-weight:700;margin-bottom:8px;color:var(--text);border-bottom:2px solid var(--border);padding-bottom:12px}
+.main h2{font-size:20px;font-weight:600;margin:32px 0 12px;color:var(--text)}
+.main h3{font-size:16px;font-weight:600;margin:24px 0 8px;color:var(--text)}
+.main p{margin-bottom:12px;color:var(--text)}
+.main ul,.main ol{margin:0 0 12px 24px}
+.main li{margin-bottom:4px}
+.main a{color:var(--accent);text-decoration:none}
+.main a:hover{text-decoration:underline}
+.main code{background:var(--code-bg);padding:2px 6px;border-radius:4px;font-size:13px;font-family:'SF Mono',Consolas,monospace}
+.main pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;
+  padding:16px;overflow-x:auto;margin:12px 0;font-size:13px;line-height:1.5}
+.main pre code{background:none;padding:0}
+.main table{width:100%;border-collapse:collapse;margin:12px 0;font-size:14px}
+.main th,.main td{border:1px solid var(--border);padding:8px 12px;text-align:left}
+.main th{background:var(--code-bg);font-weight:600}
+.main blockquote{border-left:3px solid var(--accent);padding:8px 16px;margin:12px 0;
+  background:var(--accent-bg);border-radius:0 6px 6px 0;color:var(--muted)}
+.main hr{border:none;border-top:1px solid var(--border);margin:24px 0}
+.main img{max-width:100%;border-radius:8px}
+
+/* Back to platform link */
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--accent);
+  text-decoration:none;margin-bottom:20px;padding:6px 12px;border-radius:6px;border:1px solid var(--border)}
+.back-link:hover{background:var(--accent-bg)}
+
+/* Mobile */
+@media(max-width:768px){
+  .sidebar{display:none}
+  .main{margin-left:0;padding:20px}
+}
+
+/* Loading */
+.loading{text-align:center;padding:60px;color:var(--muted)}
+</style>
+</head>
+<body>
+
+<nav class="sidebar">
+  <h1>AI Security Lab</h1>
+  <div class="sub">Documentation</div>
+
+  <div class="section">Platform</div>
+  <a href="#" onclick="loadDoc('ARCHITECTURE.md')" id="nav-architecture">Architecture</a>
+  <a href="#" onclick="loadDoc('research_notes.md')" id="nav-research_notes">Research Notes</a>
+
+  <div class="section">Strategy</div>
+  <a href="#" onclick="loadDoc('ROADMAP.md')" id="nav-roadmap">Product Roadmap</a>
+
+  <div class="section">Project</div>
+  <a href="#" onclick="loadDoc('../README.md')" id="nav-readme">README</a>
+
+  <div style="margin-top:24px;padding-top:16px;border-top:1px solid var(--border)">
+    <a href="../index.html" class="back-link">← Back to Platform</a>
+  </div>
+</nav>
+
+<main class="main" id="content">
+  <div class="loading">Select a document from the sidebar.</div>
+</main>
+
+<script>
+const content = document.getElementById('content');
+let currentDoc = '';
+
+async function loadDoc(path) {
+  // Update active nav
+  document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
+  const navId = 'nav-' + path.replace('../','').replace('.md','').toLowerCase();
+  const navEl = document.getElementById(navId);
+  if (navEl) navEl.classList.add('active');
+
+  currentDoc = path;
+  content.innerHTML = '<div class="loading">Loading...</div>';
+
+  try {
+    const res = await fetch(path);
+    if (!res.ok) throw new Error('File not found');
+    const md = await res.text();
+    content.innerHTML = marked.parse(md);
+  } catch (e) {
+    content.innerHTML = `<div class="loading">Could not load ${path}. Make sure you're serving this from a local server (e.g. <code>python3 -m http.server</code> from the docs/ folder).</div>`;
+  }
+}
+
+// Load architecture by default
+loadDoc('ARCHITECTURE.md');
+
+// Handle hash-based navigation
+if (window.location.hash) {
+  const doc = window.location.hash.slice(1);
+  if (doc) loadDoc(doc);
+}
+</script>
+</body>
+</html>

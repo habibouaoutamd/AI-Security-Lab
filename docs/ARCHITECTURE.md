@@ -4,6 +4,69 @@ How everything works under the hood.
 
 ---
 
+## Design System & Color Palette
+
+### Brand Colors
+
+| Swatch | Hex | Name | Usage |
+|---|---|---|---|
+| 🟦 | `#355872` | Deep Steel | Primary accent (light mode), borders (dark mode), headings |
+| 🔵 | `#7AAACE` | Mid Blue | Primary accent (dark mode), links, buttons, active states |
+| 🩵 | `#9CD5FF` | Sky | Secondary accent, highlights, hover states, gradients |
+| ⬜ | `#F7F8F0` | Warm White | Text (dark mode), background (light mode) |
+
+### Dark Mode Tokens
+
+```css
+--bg: #0d1b26        /* Page background */
+--surface: #142533   /* Card backgrounds */
+--panel: #1a3044     /* Elevated panels, inputs */
+--border: #2a4a62    /* Subtle borders */
+--border2: #355872   /* Stronger borders, active states */
+--accent: #7AAACE    /* Primary interactive color */
+--accent2: #9CD5FF   /* Secondary/highlight color */
+--text: #F7F8F0      /* Primary text */
+--muted: #9CB8CC     /* Secondary text */
+--dim: #4a6a80       /* Tertiary/disabled text */
+```
+
+### Light Mode Tokens
+
+```css
+--bg: #F7F8F0        /* Page background */
+--surface: #ffffff   /* Card backgrounds */
+--panel: #eef2ea     /* Elevated panels */
+--border: #d4ddd0    /* Subtle borders */
+--border2: #bcc8b8   /* Stronger borders */
+--accent: #355872    /* Primary interactive color */
+--accent2: #2a4660   /* Secondary/darker accent */
+--text: #1a2e3e      /* Primary text */
+--muted: #355872     /* Secondary text */
+--dim: #9CB8CC       /* Tertiary/disabled text */
+```
+
+### Semantic Colors (both modes)
+
+| Purpose | Hex | Usage |
+|---|---|---|
+| Success / Green | `#10b981` | Refusals, strong scores, status dots |
+| Warning / Amber | `#f59e0b` | Moderate scores, leak level 2 |
+| Danger / Red | `#ef4444` | Successful attacks, high risk, leak level 3-4 |
+| Purple | `#a78bfa` | AI-scored badge, persistence category |
+
+### Typography
+
+- **Font:** `'Courier New', monospace` (platform) / System sans-serif (landing page, docs)
+- **Sizes:** 9px labels, 11px body small, 13px body, 16px subheadings, 20px titles, 30px hero
+- **Letter spacing:** 1-2px on labels and badges
+
+### Logo
+
+- Mark: `SB` in white on gradient background (`#7AAACE` → `#9CD5FF`)
+- Text: `SigBench` in 12px weight-600
+
+---
+
 ## System Overview
 
 ```

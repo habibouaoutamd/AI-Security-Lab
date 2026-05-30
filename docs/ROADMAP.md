@@ -2,7 +2,7 @@
 
 ## Vision
 
-AI Security Lab is the benchmark layer for measuring how AI systems fail. We provide enterprises with continuous, automated adversarial testing of their LLM deployments — across models, across categories, with adaptive depth.
+SigBench is the benchmark layer for measuring how AI systems fail. We provide enterprises with continuous, automated adversarial testing of their LLM deployments — across models, across categories, with adaptive depth.
 
 ---
 
@@ -131,7 +131,7 @@ The key differentiator: **nothing leaves the customer's environment.**
 - All model responses
 - Full detailed report (PDF generated locally)
 
-**Deployment:** Single Docker container, `docker run aiseclab/agent --config config.yaml`. Config file specifies the local LLM endpoint, scan depth, and optional webhook for score reporting.
+**Deployment:** Single Docker container, `docker run sigbench/agent --config config.yaml`. Config file specifies the local LLM endpoint, scan depth, and optional webhook for score reporting.
 
 ### Architecture
 
@@ -324,13 +324,13 @@ START
 # docker-compose.yml for customer deployment
 version: '3.8'
 services:
-  aiseclab-agent:
-    image: aiseclab/scan-agent:latest
+  sigbench-agent:
+    image: sigbench/scan-agent:latest
     environment:
       - TARGET_ENDPOINT=http://internal-llm:8080/v1/chat/completions
       - TARGET_MODEL=gpt-4o
       - SCAN_DEPTH=standard  # quick | standard | deep
-      - REPORT_WEBHOOK=https://dashboard.aiseclab.io/api/scores
+      - REPORT_WEBHOOK=https://dashboard.sigbench.io/api/scores
       - AGENT_TOKEN=ast_xxx  # auth token for score reporting
       - SYSTEM_PROMPT_FILE=/config/system_prompt.txt
     volumes:
@@ -414,9 +414,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: aiseclab/scan-action@v1
+      - uses: sigbench/scan-action@v1
         with:
-          api-key: ${{ secrets.AISECLAB_API_KEY }}
+          api-key: ${{ secrets.SIGBENCH_API_KEY }}
           model-endpoint: ${{ secrets.LLM_ENDPOINT }}
           system-prompt-file: ./system_prompts/main.txt
           depth: standard

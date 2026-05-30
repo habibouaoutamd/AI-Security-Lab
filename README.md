@@ -1,4 +1,4 @@
-# AI Security Lab
+# SigBench
 
 Adversarial testing platform for prompt injection and system prompt extraction attacks against LLMs. Two interfaces: a browser-based attack platform and a Python CLI harness.
 
@@ -7,7 +7,7 @@ Adversarial testing platform for prompt injection and system prompt extraction a
 ## Repository Structure
 
 ```
-AI-Security-Lab/
+SigBench/
 ├── index.html                   # Browser attack platform (main product)
 ├── attack_harness/
 │   ├── run_tests.py             # Fires jailbreak_prompts.json at a target model
@@ -30,7 +30,7 @@ AI-Security-Lab/
 
 ```bash
 git clone https://github.com/habibouaoutamd/AI-Security-Lab.git
-cd AI-Security-Lab
+cd SigBench
 ```
 
 ### 2. Configure environment variables

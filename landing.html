@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Security Lab — Measure How Your AI Systems Fail</title>
+<meta name="description" content="Adversarial testing platform for LLMs. Test your AI systems for prompt injection, system prompt leakage, and guardrail bypasses. Get a resilience score.">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#030712;--surface:#111827;--border:#1f2937;--accent:#0ea5e9;--accent2:#6366f1;
+  --text:#f1f5f9;--muted:#94a3b8;--dim:#4b5563;--green:#10b981;--red:#ef4444}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  line-height:1.6;overflow-x:hidden}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* Background */
+body::before{content:'';position:fixed;inset:0;
+  background:radial-gradient(ellipse at 50% 0%,rgba(14,165,233,0.08) 0%,transparent 60%);
+  pointer-events:none}
+
+/* Container */
+.container{max-width:720px;margin:0 auto;padding:0 24px}
+.container-wide{max-width:960px;margin:0 auto;padding:0 24px}
+
+/* Nav */
+.nav{padding:20px 24px;display:flex;align-items:center;justify-content:space-between;max-width:960px;margin:0 auto}
+.nav-logo{display:flex;align-items:center;gap:10px}
+.nav-logo-mark{width:28px;height:28px;border-radius:6px;background:linear-gradient(135deg,var(--accent),var(--accent2));
+  display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff}
+.nav-logo-text{font-size:14px;font-weight:600;color:var(--text);letter-spacing:0.5px}
+.nav-cta{padding:8px 16px;border-radius:6px;background:var(--accent);color:#fff;font-size:13px;
+  font-weight:500;border:none;cursor:pointer;transition:opacity 0.15s}
+.nav-cta:hover{opacity:0.85;text-decoration:none}
+
+/* Hero */
+.hero{padding:80px 0 60px;text-align:center}
+.hero-badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:12px;
+  color:var(--accent);border:1px solid rgba(14,165,233,0.3);background:rgba(14,165,233,0.08);margin-bottom:20px}
+.hero h1{font-size:44px;font-weight:700;line-height:1.2;margin-bottom:16px;
+  background:linear-gradient(135deg,var(--text) 0%,var(--muted) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero p{font-size:18px;color:var(--muted);max-width:540px;margin:0 auto 32px;line-height:1.7}
+.hero-ctas{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.btn-primary{padding:12px 24px;border-radius:8px;background:var(--accent);color:#fff;font-size:15px;
+  font-weight:500;border:none;cursor:pointer;transition:all 0.15s;text-decoration:none}
+.btn-primary:hover{opacity:0.85;transform:translateY(-1px);text-decoration:none}
+.btn-secondary{padding:12px 24px;border-radius:8px;background:transparent;color:var(--text);font-size:15px;
+  font-weight:500;border:1px solid var(--border);cursor:pointer;transition:all 0.15s;text-decoration:none}
+.btn-secondary:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+
+/* Stats */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:40px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin:0 0 60px}
+.stat{text-align:center}
+.stat-num{font-size:32px;font-weight:700;color:var(--text)}
+.stat-label{font-size:13px;color:var(--muted);margin-top:4px}
+
+/* Sections */
+.section{padding:60px 0}
+.section-label{font-size:11px;letter-spacing:2px;color:var(--accent);margin-bottom:8px;text-transform:uppercase}
+.section h2{font-size:28px;font-weight:700;margin-bottom:12px}
+.section p{font-size:16px;color:var(--muted);margin-bottom:24px;max-width:560px}
+
+/* Feature grid */
+.features{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:24px}
+.feature{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px}
+.feature-icon{font-size:20px;margin-bottom:10px}
+.feature h3{font-size:15px;font-weight:600;margin-bottom:6px}
+.feature p{font-size:13px;color:var(--muted);margin:0;line-height:1.6}
+
+/* How it works */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:24px}
+.step{text-align:center;padding:24px 16px}
+.step-num{width:32px;height:32px;border-radius:50%;background:rgba(14,165,233,0.1);border:1px solid rgba(14,165,233,0.3);
+  display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:14px;font-weight:600;color:var(--accent)}
+.step h3{font-size:14px;font-weight:600;margin-bottom:6px}
+.step p{font-size:13px;color:var(--muted);line-height:1.5}
+
+/* Email capture */
+.cta-section{padding:60px 0;text-align:center;border-top:1px solid var(--border)}
+.cta-section h2{font-size:28px;font-weight:700;margin-bottom:8px}
+.cta-section p{font-size:16px;color:var(--muted);margin-bottom:24px}
+.email-form{display:flex;gap:8px;max-width:420px;margin:0 auto}
+.email-form input{flex:1;padding:12px 16px;border-radius:8px;border:1px solid var(--border);
+  background:var(--surface);color:var(--text);font-size:14px;outline:none}
+.email-form input:focus{border-color:var(--accent)}
+.email-form button{padding:12px 20px;border-radius:8px;background:var(--accent);color:#fff;
+  font-size:14px;font-weight:500;border:none;cursor:pointer;white-space:nowrap}
+.email-form button:hover{opacity:0.85}
+.email-success{display:none;color:var(--green);font-size:14px;margin-top:12px}
+.email-note{font-size:11px;color:var(--dim);margin-top:10px}
+
+/* Footer */
+.footer{padding:40px 0;border-top:1px solid var(--border);text-align:center;font-size:12px;color:var(--dim)}
+
+/* Responsive */
+@media(max-width:640px){
+  .hero h1{font-size:30px}
+  .features,.steps,.stats{grid-template-columns:1fr}
+  .email-form{flex-direction:column}
+}
+</style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav class="nav">
+  <div class="nav-logo">
+    <div class="nav-logo-mark">AI</div>
+    <div class="nav-logo-text">AI Security Lab</div>
+  </div>
+  <a href="#early-access" class="nav-cta">Get Early Access</a>
+</nav>
+
+<!-- Hero -->
+<div class="container">
+  <section class="hero">
+    <div class="hero-badge">Now in private beta</div>
+    <h1>Measure how your AI systems fail before attackers do</h1>
+    <p>Automated adversarial testing for LLMs. We find prompt injection vulnerabilities, system prompt leakage, and guardrail bypasses — then give you a resilience score and remediation plan.</p>
+    <div class="hero-ctas">
+      <a href="#early-access" class="btn-primary">Get Early Access</a>
+      <a href="index.html" class="btn-secondary">Try the Platform →</a>
+    </div>
+  </section>
+</div>
+
+<!-- Stats -->
+<div class="container-wide">
+  <div class="stats">
+    <div class="stat"><div class="stat-num">8</div><div class="stat-label">Attack categories</div></div>
+    <div class="stat"><div class="stat-num">35+</div><div class="stat-label">Adversarial prompts</div></div>
+    <div class="stat"><div class="stat-num">5</div><div class="stat-label">Scoring dimensions</div></div>
+  </div>
+</div>
+
+<!-- Problem -->
+<div class="container">
+  <section class="section">
+    <div class="section-label">The problem</div>
+    <h2>Every security category has a benchmark. AI doesn't.</h2>
+    <p>Cloud security has CIS benchmarks. AppSec has OWASP. Identity has zero-trust frameworks. AI security has... manual red-teaming once a quarter, if you're lucky.</p>
+    <p style="color:var(--muted);font-size:16px">Your LLMs are in production. Users are talking to them right now. How confident are you that they won't leak your system prompt, bypass your guardrails, or get manipulated into harmful outputs?</p>
+  </section>
+</div>
+
+<!-- Features -->
+<div class="container-wide">
+  <section class="section">
+    <div class="section-label">What we do</div>
+    <h2>Continuous adversarial testing for your AI stack</h2>
+    <div class="features">
+      <div class="feature">
+        <div class="feature-icon">🎯</div>
+        <h3>8 Attack Categories</h3>
+        <p>Direct extraction, prompt chaining, roleplay exploits, transformation abuse, authority escalation, obfuscation, ambiguity probing, and persistence attacks.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🤖</div>
+        <h3>AI-Powered Scoring</h3>
+        <p>LLM-as-judge evaluates each response semantically — catches leaks that regex can't. Scores on a 0–4 leak scale with confidence ratings.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">📊</div>
+        <h3>Resilience Score</h3>
+        <p>Composite score across 5 dimensions: injection resistance, leakage prevention, guardrail accuracy, ambiguity handling, transformation resistance.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🔒</div>
+        <h3>Zero Data Exfiltration</h3>
+        <p>On-prem scan agent runs inside your network. Your system prompts, API keys, and model responses never leave your environment. We only see the score.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🔄</div>
+        <h3>Adaptive Red Team</h3>
+        <p>AI agent that reads responses, adapts strategy, and keeps probing until it succeeds or exhausts its budget. Stops early if the model is resistant.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">📈</div>
+        <h3>Track Over Time</h3>
+        <p>Run scans weekly or on every deployment. Track your resilience score over time. Get alerted when it drops below your threshold.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- How it works -->
+<div class="container">
+  <section class="section">
+    <div class="section-label">How it works</div>
+    <h2>Three steps to your first score</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3>Connect</h3>
+        <p>Point us at your LLM endpoint (or deploy our Docker agent on-prem). Configure the system prompt to test.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3>Scan</h3>
+        <p>We fire adversarial prompts across all 8 attack categories. AI-judge scores every response for leakage and compliance.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3>Score</h3>
+        <p>Get your resilience score, per-category breakdown, specific prompts that succeeded, and remediation priorities.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- CTA -->
+<div class="container" id="early-access">
+  <section class="cta-section">
+    <h2>Get early access</h2>
+    <p>We're onboarding design partners now. Drop your email and we'll reach out with next steps.</p>
+    <form class="email-form" onsubmit="submitEmail(event)">
+      <input type="email" id="ea-email" placeholder="you@company.com" required>
+      <button type="submit">Join Waitlist</button>
+    </form>
+    <div class="email-success" id="ea-success">✓ You're on the list. We'll be in touch soon.</div>
+    <div class="email-note">No spam. We'll only email you about access and updates.</div>
+  </section>
+</div>
+
+<!-- Footer -->
+<footer class="footer">
+  <p>AI Security Lab — Adversarial testing for LLMs</p>
+  <p style="margin-top:6px"><a href="index.html">Platform</a> · <a href="docs/">Documentation</a> · <a href="mailto:habibouaoutamd@gmail.com">Contact</a></p>
+</footer>
+
+<script>
+function submitEmail(e){
+  e.preventDefault();
+  const email=document.getElementById('ea-email').value.trim();
+  if(!email) return;
+
+  // Send via mailto as a simple collection method
+  // Replace with a proper backend/Formspree/Mailchimp when you have one
+  const mailtoLink=`mailto:habibouaoutamd@gmail.com?subject=${encodeURIComponent('Early Access Request — AI Security Lab')}&body=${encodeURIComponent('Email: '+email+'\n\nRequested early access to AI Security Lab.')}`;
+  window.open(mailtoLink,'_blank');
+
+  // Also store locally for reference
+  const emails=JSON.parse(localStorage.getItem('aiseclab_waitlist')||'[]');
+  emails.push({email,date:new Date().toISOString()});
+  localStorage.setItem('aiseclab_waitlist',JSON.stringify(emails));
+
+  // Show success
+  document.querySelector('.email-form').style.display='none';
+  document.getElementById('ea-success').style.display='block';
+}
+</script>
+</body>
+</html>
